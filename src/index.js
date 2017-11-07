@@ -9,8 +9,13 @@ function wrapping (f) {
   })
 }
 
-function runJobWithTimes (job, times) {
-  return Promise.all((new Array(times)).fill(null).map(() => job()))
+async function runJobWithTimes (start, job, times) {
+  const end = start + times
+  const promises = []
+  for (let i = start; i < end ;i++) {
+    promises.push(job(i))
+  }
+  return Promise.all(promises)
 }
 
 exports.default = async (parallelism, job, times) => {
@@ -21,7 +26,7 @@ exports.default = async (parallelism, job, times) => {
   for (let i = 0; i < times; i += parallelism) {
     let rp = parallelism
     if (parallelism > (times - i)) rp = times - i
-    rvs.push(...(await runJobWithTimes(job, rp)))
+    rvs.push(...(await runJobWithTimes(i, runner, rp)))
   }
   return rvs
 }

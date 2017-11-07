@@ -12,7 +12,7 @@ const waitTimes = [
   // block 2 (will 19ms)
   19
 ]
-const wait = () => new Promise(res => {
+const wait = (i) => new Promise(res => {
   const ms = waitTimes.shift()
   setTimeout(() => res(ms), ms)
 })
