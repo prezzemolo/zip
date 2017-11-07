@@ -9,26 +9,19 @@ function wrapping (f) {
   })
 }
 
-function runJobWithArgs (job, args) {
-  return Promise.all(args.map(job))
+function runJobWithTimes (job, times) {
+  return Promise.all((new Array(times)).fill(null).map(() => job()))
 }
 
-module.exports = async (parallelism, job, args) => {
+exports.default = async (parallelism, job, times) => {
   let runner = job
   if (!(job instanceof Promise)) runner = wrapping(job)
   let tmp = []
   const rvs = []
-  const al = args.length
-  for (let i = 0; i < al; ++i) {
-    tmp.push(args.shift())
-    if (tmp.length === parallelism) {
-      rvs.push(...(await runJobWithArgs(job, tmp)))
-      tmp = []
-    }
-  }
-  if (tmp.length !== 0) {
-    rvs.push(...(await runJobWithArgs(job, tmp)))
-    tmp = []
+  for (let i = 0; i < times; i += parallelism) {
+    let rp = parallelism
+    if (parallelism > (times - i)) rp = times - i
+    rvs.push(...(await runJobWithTimes(job, rp)))
   }
   return rvs
 }
