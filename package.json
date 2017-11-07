@@ -1,6 +1,6 @@
 {
   "name": "@prezzemolo/zip",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "iterate job in parallel with given DOP (Degree of parallelism)",
   "main": "src/index.js",
   "repository": "git+https://github.com/prezzemolo/zip.git",
